@@ -44,7 +44,9 @@
         <table class="table table-bordered" id="docLog">
             <tr>
                 <td style="width: 40px;">工<br />作<br />內<br />容<br />紀<br />錄</td>
-                <td></td>
+                <td>
+                    <textarea style="width: 100%; height: 200px;" id="docJob"></textarea>
+                </td>
             </tr>
         </table>
         <div class="row">
@@ -99,11 +101,11 @@
                         default:
                             continue;
                     }
-                    $('#docSheet tbody').append('<tr><td>' + dStr + '</td><td>' + wStr + '</td><td>09:00</td><td>17:30</td></tr>');
+                    $('#docSheet tbody').append('<tr><td>' + dStr + '</td><td>' + wStr + '</td><td>08:30</td><td>17:30</td></tr>');
                 }
-                var dTitle = $('#docTitle').val();
-                $('#docTitle').replaceWith(dTitle);
+                $('#docTitle').replaceWith($('#docTitle').val());
                 $('#btnBar').remove();
+                $('#docJob').replaceWith('<pre>' + $('#docJob').val() + '</pre>');
             });
         })
     </script>
