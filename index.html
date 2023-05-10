@@ -135,7 +135,7 @@
                 const cellEnd = document.createElement('td')
                 cellDate.textContent = currentDate.toLocaleDateString('zh-Hant', {
                     dateStyle: 'full'
-                }).split(' ')[0].replace(/([^\d])/g, ' $1 ')
+                }).split(' ')[0].replace(/([^\d])/g, ' $1 ').replace(/(\d{4})/g, currentDate.getFullYear() - 1911)
                 const btn = document.createElement('button')
                 btn.addEventListener('click', (e) => e.target.closest('tr').remove())
                 btn.classList.add('fl')
