@@ -4,109 +4,155 @@
 <head>
     <meta charset="UTF-8">
     <title>差勤紀錄表</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css"
-        integrity="sha256-FAOaXTpl90/K8cXmSdsskbQN3nKYulhCpPbcFzGTWKI=" crossorigin="anonymous">
+    <link href="https://unpkg.com/tachyons@4.12.0/css/tachyons.css" rel="stylesheet">
+    <style>
+        #table {
+            font-size: 1.2em;
+            font-family: "標楷體", DFKai-sb, "楷體-繁", STKaiTi-TC-Regular, STKaiTi-TC, STKaiTi, fangsong, cursive, "Noto Serif TC", serif;
+        }
+        
+        @media print {
+            #form, button {
+                display: none;
+            }
+
+            #table table {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
-<body>
-    <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
-        <h1 class="text-center">
-            <input type="text" placeholder="請輸入標題" aria-label="Worksheet's title" id="docTitle">
+<body class="pa4 ma0">
+    <div class="center flex">
+        <div id="form" class="pr4">
+        <h1 class="mt0">
             差勤紀錄表
         </h1>
-        <div id="btnBar">
-            <input type="text" placeholder="請輸入開始日期" aria-label="Worksheet's date begin" id="dateBegin">
-            <input type="text" placeholder="請輸入結束日期" aria-label="Worksheet's date end" id="dateEnd">
-            <input type="button" value="產生" id="btnGenerate">
-            <hr />
+        <form>
+            <div class="db mb2">
+                <label>
+                    標題<br>
+                    <input type="text" id="title" placeholder="請輸入標題" class="f3 pa2 mt2" autofocus required>
+                </label><span class="f3">差勤紀錄表</span>
+            </div>
+            <label class="db mb2 flex items-center">
+                <div>開始日期</div>
+                <input type="date" id="dateBegin" class="flex-auto ml2 pa2" required>
+            </label>
+            <label class="db mb2 flex items-center">
+                <div>結束日期</div>
+                <input type="date" id="dateEnd" class="flex-auto ml2 pa2" required>
+            </label>
+            <label>
+                工作內容紀錄
+                <textarea rows="6" class="pa2 w-100 mt2" id="docJob" required></textarea>
+            </label>
+            <button type="submit" class="ph4 pv3 pointer hover-white hover-bg-green mt3 b--green ba bg-white br1">產生</button>
+        </form>
         </div>
-        <table class="table table-bordered" id="docSheet">
-            <thead>
-                <tr>
-                    <th>日期</th>
-                    <th>星期</th>
-                    <th>上班時間</th>
-                    <th>下班時間</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>日期</td>
-                    <td>星期</td>
-                    <td>上班時間</td>
-                    <td>下班時間</td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered" id="docLog">
-            <tr>
-                <td style="width: 40px;">工<br />作<br />內<br />容<br />紀<br />錄</td>
-                <td>
-                    <textarea style="width: 100%; height: 200px;" id="docJob"></textarea>
-                </td>
-            </tr>
-        </table>
-        <div class="row">
-            <div class="col-6">填表人簽名：</div>
-            <div class="col-6">簽核：</div>
+        <div class="flex-auto table" id="table">
         </div>
+        <template>
+            <h2 class="f3 tc mt0" id="worksheetTitle"></h2>
+            <table cellpadding="10" class="collapse ba w-100 center" id="docSheet">
+                <thead>
+                    <tr>
+                        <th class="ba">日期</th>
+                        <th class="ba">星期</th>
+                        <th class="ba">上班時間</th>
+                        <th class="ba">下班時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <table cellpadding="10" class="collapse center mt3 w-100">
+                <tr>
+                    <td class="ba w1">工作內容紀錄</td>
+                    <td id="docLog" class="v-top ba pre-wrap"></td>
+                </tr>
+            </table>
+            <div class="pv4 flex center">
+                <div class="w-50">填表人簽名：</div>
+                <div class="w-50">簽核：</div>
+            </div>
+        </template>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
-        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"
-        integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
     <script>
-        $(function () {
-            $('#dateBegin').datepicker({
-                format: 'yyyy-mm-dd',
-                language: 'zh-TW',
-                autoclose: true
-            });
-            $('#dateEnd').datepicker({
-                format: 'yyyy-mm-dd',
-                language: 'zh-TW',
-                autoclose: true
-            });
-            $('#btnGenerate').click(function () {
-                var dBegin = Date.parse($('#dateBegin').val());
-                var dEnd = Date.parse($('#dateEnd').val());
-                $('#docSheet tbody').html('');
-                for (i = dBegin; i <= dEnd; i += 86400000) {
-                    var d = new Date(i);
-                    var dStr = (d.getFullYear() - 1911) + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
-                    var w = d.getDay();
-                    var wStr = '';
-                    switch (w) {
-                        case 1:
-                            wStr = '一';
-                            break;
-                        case 2:
-                            wStr = '二';
-                            break;
-                        case 3:
-                            wStr = '三';
-                            break;
-                        case 4:
-                            wStr = '四';
-                            break;
-                        case 5:
-                            wStr = '五';
-                            break;
-                        default:
-                            continue;
-                    }
-                    $('#docSheet tbody').append('<tr><td>' + dStr + '</td><td>' + wStr + '</td><td>08:30</td><td>17:30</td></tr>');
-                }
-                $('#docTitle').replaceWith($('#docTitle').val());
-                $('#btnBar').remove();
-                $('#docJob').replaceWith('<pre>' + $('#docJob').val() + '</pre>');
-            });
+        const template = document.querySelector('template')
+        const startDate = document.getElementById('dateBegin')
+        const endDate = document.getElementById('dateEnd')
+
+        const holidays = [ // https://www.319papago.idv.tw/holiday/2023-hr/2023_HR.html
+            '2023-01-01',
+            '2023-01-02',
+            '2023-01-20',
+            '2023-01-21',
+            '2023-01-22',
+            '2023-01-23',
+            '2023-01-24',
+            '2023-01-25',
+            '2023-01-26',
+            '2023-01-27',
+            '2023-02-27',
+            '2023-02-28',
+            '2023-04-03',
+            '2023-04-04',
+            '2023-04-05',
+            '2023-05-01',
+            '2023-06-22',
+            '2023-06-23',
+            '2023-09-29',
+            '2023-10-09',
+            '2023-10-10'
+        ].map(e => new Date(e).getTime())
+
+        const now = new Date()
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+        startDate.value = `${startOfMonth.getFullYear()}-${(startOfMonth.getMonth() + 1).toString().padStart(2, '0')}-${startOfMonth.getDate().toString().padStart(2, '0')}`
+        endDate.value = `${endOfMonth.getFullYear()}-${(endOfMonth.getMonth() + 1).toString().padStart(2, '0')}-${endOfMonth.getDate().toString().padStart(2, '0')}`
+        console.log(holidays)
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault()
+            document.querySelector('#table').innerHTML = ''
+            const newTable = template.content.cloneNode(true)
+            const docJob = document.getElementById('docJob')
+            const docLog = newTable.getElementById('docLog')
+            newTable.getElementById('worksheetTitle').textContent = document.getElementById('title').value + '差勤紀錄表'
+            docLog.textContent = docJob.value
+
+            for (let currentDate = startDate.valueAsDate; currentDate <= endDate.valueAsDate; currentDate.setTime(currentDate.getTime() + 60 * 24 * 60 * 1000)) {
+                if (holidays.includes(currentDate.getTime())) continue
+                if ([6, 0].includes(currentDate.getDay())) continue
+
+                const row = document.createElement('tr')
+                const cellDate = document.createElement('td')
+                const cellWeekday = document.createElement('td')
+                const cellStart = document.createElement('td')
+                const cellEnd = document.createElement('td')
+                cellDate.textContent = currentDate.toLocaleDateString('zh-Hant', {
+                    dateStyle: 'full'
+                }).split(' ')[0].replace(/([^\d])/g, ' $1 ')
+                const btn = document.createElement('button')
+                btn.addEventListener('click', (e) => e.target.closest('tr').remove())
+                btn.classList.add('fl')
+                btn.textContent = '移除'
+                cellDate.prepend(btn)
+                cellWeekday.textContent = currentDate.toLocaleDateString('zh-Hant', {
+                    weekday: 'short'
+                }).split('')[1]
+                cellStart.textContent = '08:30'
+                cellEnd.textContent = '17:30'
+                const cells = [cellDate, cellWeekday, cellStart, cellEnd]
+                cells.forEach(e => e.classList.add('ba', 'tc'))
+                row.append(...cells)
+                newTable.querySelector('tbody').append(row)
+            }
+
+            document.getElementById('table').append(newTable)
         })
     </script>
 </body>
