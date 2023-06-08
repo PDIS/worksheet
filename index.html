@@ -108,6 +108,15 @@
             '2023-10-10'
         ].map(e => new Date(e).getTime())
 
+        const extraWorkDays = [
+            '2023-01-07',
+            '2023-02-04',
+            '2023-02-18',
+            '2023-03-25',
+            '2023-06-17',
+            '2023-09-23'
+        ].map(e => new Date(e).getTime())
+
         const now = new Date()
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
@@ -126,7 +135,8 @@
 
             for (let currentDate = startDate.valueAsDate; currentDate <= endDate.valueAsDate; currentDate.setTime(currentDate.getTime() + 60 * 24 * 60 * 1000)) {
                 if (holidays.includes(currentDate.getTime())) continue
-                if ([6, 0].includes(currentDate.getDay())) continue
+                const isExtraWorkDays = extraWorkDays.includes(currentDate.getTime())
+                if (!isExtraWorkDays && [6, 0].includes(currentDate.getDay())) continue
 
                 const row = document.createElement('tr')
                 const cellDate = document.createElement('td')
@@ -135,7 +145,7 @@
                 const cellEnd = document.createElement('td')
                 cellDate.textContent = currentDate.toLocaleDateString('zh-Hant', {
                     dateStyle: 'full'
-                }).split(' ')[0].replace(/([^\d])/g, ' $1 ').replace(/(\d{4})/g, currentDate.getFullYear() - 1911)
+                }).split(' ')[0].replace(/([^\d])/g, ' $1 ').replace(/(\d{4})/g, currentDate.getFullYear() - 1911) + (isExtraWorkDays ? '（補班日）' : '')
                 const btn = document.createElement('button')
                 btn.addEventListener('click', (e) => e.target.closest('tr').remove())
                 btn.classList.add('fl')
